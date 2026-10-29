@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Travel Ease | Trip Planner</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="logo">Travel<span>Ease</span></div>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#planner">Trip Planner</a>
+            <a href="#destinations">Destinations</a>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <p class="tagline">YOUR JOURNEY STARTS HERE</p>
+            <h1>Explore the World,<br>One Trip at a Time.</h1>
+            <p>Plan your next adventure and calculate your estimated travel budget with Travel Ease.</p>
+            <a href="#planner" class="main-button">Plan Your Trip</a>
+        </div>
+    </section>
+
+    <section class="planner section" id="planner">
+        <div class="section-heading">
+            <p class="tagline">SMART TRAVEL PLANNING</p>
+            <h2>Plan Your Dream Trip</h2>
+            <p>Enter your travel details to calculate your estimated budget.</p>
+        </div>
+
+        <form action="{{ url_for('plan_trip') }}" method="POST" class="planner-form">
+
+            <div class="form-group">
+                <label for="destination">Choose Destination</label>
+
+                <select name="destination" id="destination" required>
+                    {% for place in destinations %}
+                    <option value="{{ place }}"
+                        {% if result and result.destination == place %}selected{% endif %}>
+                        {{ place }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="days">Trip Duration (Days)</label>
+                <input
+                    type="number"
+                    id="days"
+                    name="days"
+                    min="1"
+                    max="30"
+                    value="{{ result.days if result else 3 }}"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="people">Number of Travellers</label>
+                <input
+                    type="number"
+                    id="people"
+                    name="people"
+                    min="1"
+                    max="20"
+                    value="{{ result.people if result else 2 }}"
+                    required>
+            </div>
+
+            <button type="submit" class="main-button">Calculate Budget</button>
+        </form>
+
+        {% if result %}
+        <div class="result-card">
+
+            <p class="tagline">YOUR TRIP SUMMARY</p>
+            <h2>{{ result.destination }} Trip</h2>
+
+            <p><strong>Duration:</strong> {{ result.days }} days</p>
+            <p><strong>Travellers:</strong> {{ result.people }}</p>
+
+            <h3>Estimated Budget Breakdown</h3>
+
+            <div class="cost-breakdown">
+
+                <div class="cost-row">
+                    <span>🏨 Accommodation</span>
+                    <strong>₹{{ "{:,}".format(result.accommodation) }}</strong>
+                </div>
+
+                <div class="cost-row">
+                    <span>🍽️ Food</span>
+                    <strong>₹{{ "{:,}".format(result.food) }}</strong>
+                </div>
+
+                <div class="cost-row">
+                    <span>🚕 Local Transport</span>
+                    <strong>₹{{ "{:,}".format(result.transport) }}</strong>
+                </div>
+
+                <div class="cost-row">
+                    <span>🧾 Other Expenses</span>
+                    <strong>₹{{ "{:,}".format(result.other) }}</strong>
+                </div>
+
+                <div class="cost-row total-row">
+                    <span>Total Estimated Budget</span>
+                    <strong>₹{{ "{:,}".format(result.total_cost) }}</strong>
+                </div>
+
+            </div>
+
+            <p class="note">
+                This is an illustrative estimate, not a live travel quotation.
+                Actual expenses may vary.
+            </p>
+
+        </div>
+        {% endif %}
+    </section>
+
+    <section class="destinations section" id="destinations">
+        <div class="section-heading">
+            <p class="tagline">FIND YOUR NEXT ADVENTURE</p>
+            <h2>Popular Destinations</h2>
+        </div>
+
+        <div class="destination-grid">
+
+            <article class="destination-card">
+                <div class="destination-icon">🏔️</div>
+                <h3>Manali</h3>
+                <p>Mountains, snow and beautiful valleys.</p>
+            </article>
+
+            <article class="destination-card">
+                <div class="destination-icon">🌲</div>
+                <h3>Shimla</h3>
+                <p>Enjoy peaceful hills and scenic views.</p>
+            </article>
+
+            <article class="destination-card">
+                <div class="destination-icon">🏖️</div>
+                <h3>Goa</h3>
+                <p>Discover beaches and coastal beauty.</p>
+            </article>
+
+            <article class="destination-card">
+                <div class="destination-icon">🏰</div>
+                <h3>Jaipur</h3>
+                <p>Explore forts, palaces and rich history.</p>
+            </article>
+
+        </div>
+    </section>
+
+    <footer>
+        <h3>TravelEase</h3>
+        <p>Plan smart. Travel happy.</p>
+        <p>© 2026 Travel Ease | MCA Python Mini Project</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
